@@ -3,9 +3,24 @@ package com.br.deliveryfast.deliveryfast.domain;
 import java.math.BigDecimal;
 
 public class Ingrediente {
+
     private Long id;
     private String descricao;
     private BigDecimal valor;
+
+    public Ingrediente() {
+    }
+
+    public Ingrediente(String descricao, BigDecimal valor) {
+        this.descricao = descricao;
+        this.valor = valor;
+    }
+
+    public Ingrediente(Long id, String descricao, BigDecimal valor) {
+        this.id = id;
+        this.descricao = descricao;
+        this.valor = valor;
+    }
 
     public Long getId() {
         return id;

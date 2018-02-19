@@ -1,9 +1,9 @@
 package com.br.deliveryfast.deliveryfast.domain;
 
-public abstract class TipoLanche {
-    public static final String X_BACON = "X-Bacon";
-    public static final String X_BURGUER = "X-Burguer";
-    public static final String X_EGG = "X-Egg";
-    public static final String X_EGG_BACON = "X-Egg Bacon";
-    public static final String X_PERSONALIZADO = "X_PERSONALIZADO";
+public abstract class TipoIngrediente {
+    public static final Long ALFACE = 1L;
+    public static final Long BACON = 2L;
+    public static final Long HAMBUERGUER = 3L;
+    public static final Long OVO = 4L;
+    public static final Long QUEIJO = 5L;
 }

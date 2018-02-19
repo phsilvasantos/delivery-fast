@@ -1,12 +1,13 @@
 package com.br.deliveryfast.deliveryfast.domain;
 
 public class Cliente {
+
     private Long id;
     private String nome;
 
-    public Cliente(){
-        this.id = new Long(1L);
-        this.nome = "LitleBoy";
+    public Cliente(Long id, String nome) {
+        this.id = id;
+        this.nome = nome;
     }
 
     public Long getId() {

@@ -9,4 +9,5 @@ public class DeliveryfastApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DeliveryfastApplication.class, args);
 	}
+
 }
