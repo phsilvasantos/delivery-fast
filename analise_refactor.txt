@@ -1,0 +1,97 @@
+https://github.com/thiagoravt/delivery-fast/blob/master/src/test/java/com/br/deliveryfast/deliveryfast/DeliveryfastApplicationTests.java
+L:19 Poderia ter adicionado uma anotação @ActiveProfiles() para definir em qual profile o teste seria executado. 
+
+L:20 Nome da classe esta abrangente demais DeliveryfastApplicationTests. Tudo indica que foi criado uma unica classe para concentrar todos os testes
+do produto aqui. O ideal seria ter classes de testes contextualizadas por uma determinada funcionalidade/serviço do produto.
+Por exemplo, ter uma classe PedidoServiceTest. E esta classe ser composta por métodos como:
+
+gerarPedidoLanche()
+gerarPedidoLancheTipoBacon()
+validarPrecoLancheTipoBacon()
+gerarPedidoLancheTipoXBurguer()
+validarPrecoLancheTipoXBurguer()
+
+... etc
+
+L:46
+O método valorLancheXBacon ficou incompleto. Como já dito anteriormente a proposta da classe DeliveryfastApplicationTests ficou um tato "vaga" ou abrangente demais, mas vamos falar um pouco mais sobre a linha 46.
+Se de fato fossemos validar o consumo da api no método valorLancheXBacon (não vejo isso como ideal), poderiamos pegar o json desse endpoint acessando o response.data, obter o atributo "valorLanche" e aplicar um assert comparando 
+se o valor do lanche do tipo bacon esta dentro do valor desejado ou não.
+Novamente ressalto aqui que considero que seria melhor a validação ser realizada consumindo um Service, onde poderiamos criar um teste unitário gerarPedidoLancheTipoBacon(), este método consumiriria um PedidoService passando um objeto
+Lanche com seu tipo setado como bacon. 
+
+
+
+https://github.com/thiagoravt/delivery-fast/blob/master/src/main/java/com/br/deliveryfast/deliveryfast/controller/CardapioController.java.
+L:16 Seguindo boas práricas de RESTful API, o ideal seria @RequestMapping("/api/cardapios") ao inves de @RequestMapping("/api/cardapio").
+L:19 Existe a definição de um LOG, mas ele nem esta sendo utilizado. Os métodos do controller deveriam ter try-catch e em caso de falha nos fluxos dos métodos o LOG deveria ter sido utilizado para escrever o erro. E uma mensagem
+amigável deveria ser configurada nos responses para o usuário ter um feedback tratado tanto em caso de HttpStatus.OK quanto HttpStatus.INTERNAL_SERVER_ERROR.
+L:20 Faltou uma anotação @Autowired para cardapioRepository.
+L:24 Remover construtor desncessário.
+Obs>Faltou expor outros recursos nesta api, adicionar paginação nas listagens, adicionar recursos de filtro e pesquisa, etc ...
+
+
+https://github.com/thiagoravt/delivery-fast/blob/master/src/main/java/com/br/deliveryfast/deliveryfast/controller/ClienteController.java.
+L:19 Existe a definição de um LOG, mas ele nem esta sendo utilizado. Os métodos do controller deveriam ter try-catch e em caso de falha nos fluxos dos métodos o LOG deveria ter sido utilizado para escrever o erro. E uma mensagem
+amigável deveria ser configurada nos responses para o usuário ter um feedback tratado tanto em caso de HttpStatus.OK quanto HttpStatus.INTERNAL_SERVER_ERROR.
+Além do LOG estar referênciando outro controller IngredienteController.class.
+Aproveito aqui mais este ponto falho pra dizer que por menor que seja o tamanho do projeto, se é POC, demo, etc ... é muito válido configurar no projeto um arquivo de checkstyle e sempre antes de realizar um push rodar um gradle check 
+pra validar a qualidade do código que esta sendo publicado. E ainda sim, posteriormente, é muito válido a utilização do Merge Request pra fazer um pente fino e levantar possíveis discussões de melhorias.
+L:20 Faltou uma anotação @Autowired para clienteController.
+L:23 Remover construtor desnecessário.
+L:27 @RequestMapping poderia ter atributo value = "listar".
+L:28 Faltou tratamento de try-catch para uma possível falha no fluxo do método findAllClientes(). Faltou utilização do LOG.
+Obs>Faltou expor outros recursos nesta api, adicionar paginação nas listagens, adicionar recursos de filtro e pesquisa, etc ...
+
+
+https://github.com/thiagoravt/delivery-fast/blob/master/src/main/java/com/br/deliveryfast/deliveryfast/controller/IngredienteController.java.
+L:18 Colocar api no plural @RequestMapping("/api/ingredientes").
+L:22 Faltou anotação @Autowired.
+L:25 Remover construtor desnecessário.
+L:30 Faltou tratamento de try-catch para uma possível falha no fluxo do método listarTodosIngreditens(). Faltou utilização do LOG.
+L:43 Apesar do método estar comentado, em caso de erro eu optaria por um return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR).
+Obs>Faltou expor outros recursos nesta api, adicionar paginação nas listagens, adicionar recursos de filtro e pesquisa, etc ...
+
+
+https://github.com/thiagoravt/delivery-fast/blob/master/src/main/java/com/br/deliveryfast/deliveryfast/controller/LancheController.java
+L:16 Colocar api no plural > @RequestMapping("/api/lanches").
+L:20 Faltou @Autowired para lancheRepository.
+L:23 Construtor desnecessário
+L:28 Faltou tratamento try-catch e melhor uso do LOG e HttpStatus
+Obs>Faltou expor outros recursos nesta api, adicionar paginação nas listagens, adicionar recursos de filtro e pesquisa, etc ...
+
+
+https://github.com/thiagoravt/delivery-fast/blob/master/src/main/java/com/br/deliveryfast/deliveryfast/controller/PedidoController.java
+L:20 Colocar api no plural > @RequestMapping("/api/pedidos").
+L:24 Faltou @Autowired no pedidoRepository.
+L:30 Remover contrutor desnecessário.
+L:35 Faltou tratamento try-catch e melhor uso do LOG e HttpStatus.
+L:44 e L:45 Definir se é o repositório ou o service que vai criar o pedido. Ao meu ver, se foi criado um service, certamente ele deve ter mais "inteligência e recursos", se isso de fato for verdade eu centralizaria as ações nele. Caso contrário,
+se o PedidoService estiver apenas acionando o PedidoRepositorio para criar o pedido, ai eu excluiria a linha 44 e manteria a 45 e questionaria se de fato é necessário a existência do PedidoService.java
+L:46 Optaria por um return new ResponseEntity<>(HttpStatus.OK)
+L:49 Optaria por return new ResponseEntity<>(exeception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR)
+
+
+https://github.com/thiagoravt/delivery-fast/blob/master/src/main/java/com/br/deliveryfast/deliveryfast/domain/services/LancheService.java
+L:32 Removeria esse try-catch. Após adicionar o tratamento de try-catch nos Controllers, eu optaria neste fluxo uma possível exception subir e ser tratada no Controller.
+L:64 Abaixo do ultimo case eu adicionaria um default: throw new IllegalArgumentException("Tipo de lanche não encontrado" + tipoLanche)
+L:119 Extraria a lógica desse FOR para um método privado obterDetalhesLanche(). Por ser uma parte importante da lógica, podendo em uma evolução futura tratar sobre outros tipos de desconto, quebrar essa parte em outro método pode
+deixar mais fácil a manutenção e entendimento da lógica do desconto.
+L:161 O conteúdo desse método poderia ser apenas uma linha> return quantidade % 3 == 0;
+
+
+https://github.com/thiagoravt/delivery-fast/blob/master/src/main/java/com/br/deliveryfast/deliveryfast/domain/services/PedidoService.java
+L12: Faltou comentário na classe.
+L17: Faltou comentário no método publico.
+L32: Poderia usar lanches.stream e somar os valores com menos linhas de código.
+
+
+https://github.com/thiagoravt/delivery-fast/blob/master/src/main/java/com/br/deliveryfast/deliveryfast/repository/IngredienteRepository.java
+L:31 lista resultadoIngredientes  desnecessária. Basta fazer o return direto com a chamada do namedPArameterJdbcTemplate.query 
+L:37 removeria esse FOR 
+L:43 removeria try-catch.
+L:45 executaria a query usando NamedPArameterJdbcTemplate passando o array de ingredintes como argumento no IN da WHERE CLAUSE.
+
+https://github.com/thiagoravt/delivery-fast/blob/master/src/main/java/com/br/deliveryfast/deliveryfast/repository/PedidoRepository.java
+L:33 trocaria MapSqlParameterSource  por namedParameterJdbcTemplate.query
+L44: removeria o try-catch
