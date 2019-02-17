@@ -9,8 +9,5 @@
         <module name="deliveryfast" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="deliveryfast" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
