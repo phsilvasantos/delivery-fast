@@ -21,7 +21,24 @@ class LancheIndexState {
             console.log(error);
             });
         });
-    }  
+    } 
+    
+    removerLanche(callback) {
+          this.loading = true;
+          LancheService.remove(callback)
+            .then(response => {
+              runInAction('Remover Lanche', () => {
+                this.loading = false;
+                if (callback) {
+                  this.loadLanches();
+                }
+              });
+            })
+            .catch(error => {
+              this.loading = false;
+              console(error);
+            });
+        }    
 }
 
 decorate(LancheIndexState, {

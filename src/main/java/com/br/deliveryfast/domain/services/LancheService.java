@@ -2,153 +2,167 @@ package com.br.deliveryfast.domain.services;
 
 import com.br.deliveryfast.domain.Ingrediente;
 import com.br.deliveryfast.domain.Lanche;
-import com.br.deliveryfast.domain.TipoIngrediente;
-import com.br.deliveryfast.domain.TipoLanche;
-import com.br.deliveryfast.repository.IngredienteRepository;
+import com.br.deliveryfast.domain.SolicitacaoLanche;
+import com.br.deliveryfast.domain.tipos.TipoIngrediente;
+import com.br.deliveryfast.domain.tipos.TipoLanche;
+import com.br.deliveryfast.repository.LancheRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.br.deliveryfast.domain.tipos.TipoLanche.*;
+
+/**
+ * Classe responsalvel em orquestrar as regras de negocio da entidade Lanche.
+ */
 @Service
 public class LancheService {
-
     private static final Logger LOG = Logger.getLogger(LancheService.class);
 
     @Autowired
-    private IngredienteRepository ingredienteRepository;
+    private LancheRepository lancheRepository;
 
     /**
-     * Metodo responsavel por criar lanches de acordo com o tipo de lanche selecionado.
+     * Metodo responsavel por criar lanches de acordo a solicitacao recebida.
      *
-     * @param tipoLanche
+     * @param solicitacaoLanche
      * @return Lanche
      */
-    public Lanche criarLanche(String tipoLanche) {
+    public Lanche criarLanche(SolicitacaoLanche solicitacaoLanche) {
         Lanche lanche = new Lanche();
-        long[] idIngredientes;
+        final TipoLanche tipoLanche = TipoLanche.obterPorCodigo(solicitacaoLanche.getCodigoLanche());
         try {
             switch (tipoLanche) {
-                case TipoLanche.X_BACON:
-                    idIngredientes = new long[]{2L, 3L, 5L};
-                    lanche.setTipoLanche(TipoLanche.X_BACON);
-                    lanche.setDescricao("Bacon, hamburguer de carne e queijo");
-                    lanche.setIngredientes(ingredienteRepository.buscarIngredientes(idIngredientes));
-                    lanche.setValor(calcularDescontoPromocao(lanche.getIngredientes()));
+                case X_BACON:
+                    lanche.setTipoLanche(X_BACON.getCodigo());
+                    lanche.setDescricao(X_BACON.getDescricao());
+                    lanche.setValor(calcularPrecoSemDesconto(solicitacaoLanche));
+                    lanche.setValorComDesconto(calcularPrecoDesconto(solicitacaoLanche));
+                    //TODO Adicionar os ingredientes do lanche no objeto e persistir em uma tabela relacional Lanche X Ingredientes
                     break;
 
-                case TipoLanche.X_BURGUER:
-                    idIngredientes = new long[]{3L, 5L};
-                    lanche.setTipoLanche(TipoLanche.X_BACON);
-                    lanche.setDescricao("Hamburguer de carne e queijo");
-                    lanche.setIngredientes(ingredienteRepository.buscarIngredientes(idIngredientes));
-                    lanche.setValor(calcularPreco(lanche));
+                case X_BURGUER:
+                    lanche.setTipoLanche(X_BURGUER.getCodigo());
+                    lanche.setDescricao(X_BURGUER.getDescricao());
+                    lanche.setValor(calcularPrecoSemDesconto(solicitacaoLanche));
+                    lanche.setValorComDesconto(calcularPrecoDesconto(solicitacaoLanche));
+                    //TODO Adicionar os ingredientes do lanche no objeto e persistir em uma tabela relacional Lanche X Ingredientes
                     break;
 
-                case TipoLanche.X_EGG:
-                    idIngredientes = new long[]{4L, 3L, 5L};
-                    lanche.setTipoLanche(TipoLanche.X_EGG);
-                    lanche.setDescricao("X-Egg', 'Ovo, hamburguer de carne e queijo");
-                    lanche.setIngredientes(ingredienteRepository.buscarIngredientes(idIngredientes));
-                    lanche.setValor(calcularPreco(lanche));
+                case X_EGG:
+                    lanche.setTipoLanche(X_EGG.getCodigo());
+                    lanche.setDescricao(X_EGG.getDescricao());
+                    lanche.setValor(calcularPrecoSemDesconto(solicitacaoLanche));
+                    lanche.setValorComDesconto(calcularPrecoDesconto(solicitacaoLanche));
+                    //TODO Adicionar os ingredientes do lanche no objeto e persistir em uma tabela relacional Lanche X Ingredientes
                     break;
 
-                case TipoLanche.X_EGG_BACON:
-                    idIngredientes = new long[]{4L, 2L, 3L, 5L};
-                    lanche.setTipoLanche(TipoLanche.X_EGG_BACON);
-                    lanche.setDescricao("Ovo, bacon, hamburguer de carne e queijo");
-                    lanche.setIngredientes(ingredienteRepository.buscarIngredientes(idIngredientes));
-                    lanche.setValor(calcularPreco(lanche));
+                case X_EGG_COM_BACON:
+                    lanche.setTipoLanche(X_EGG_COM_BACON.getCodigo());
+                    lanche.setDescricao(X_EGG_COM_BACON.getDescricao());
+                    lanche.setValor(calcularPrecoSemDesconto(solicitacaoLanche));
+                    lanche.setValorComDesconto(calcularPrecoDesconto(solicitacaoLanche));
+                    //TODO Adicionar os ingredientes do lanche no objeto e persistir em uma tabela relacional Lanche X Ingredientes
                     break;
+                case X_PERSONALIZADO:
+                    lanche.setTipoLanche(X_PERSONALIZADO.getCodigo());
+                    lanche.setDescricao(X_PERSONALIZADO.getDescricao());
+                    lanche.setValor(calcularPrecoSemDesconto(solicitacaoLanche));
+                    lanche.setValorComDesconto(calcularPrecoDesconto(solicitacaoLanche));
+                    //TODO Adicionar os ingredientes do lanche no objeto e persistir em uma tabela relacional Lanche X Ingredientes
+                    break;
+                default:
+                    throw new IllegalAccessException("Tipo de lanche não cadastrado");
             }
         } catch (Exception e) {
             LOG.error("Ocorreu um erro ao criar o lanche", e);
         }
 
-        return lanche;
-    }
-
-    /**
-     * Método que cria lanche personalizado com a seleção de ingredientes escolhido pelo cliente.
-     *
-     * @param ingredientes
-     * @return Lanche
-     */
-    public Lanche criarLanchePersonalizado(List<Ingrediente> ingredientes) {
-        Lanche lanche = new Lanche();
-        lanche.setTipoLanche(TipoLanche.X_PERSONALIZADO);
-        lanche.setDescricao("Lanche personalizado");
-        //lanche.setValor(calcularPreco(lanche));
-        lanche.setValor(calcularDescontoPromocao(lanche.getIngredientes()));
-        return lanche;
-    }
-
-    /**
-     * Calcula valor dos ingredientes utilizados no lanche.
-     *
-     * @param lanche
-     * @return BigDecimal
-     */
-    private BigDecimal calcularPreco(Lanche lanche) {
-        Double soma = new Double(0);
-        for (Ingrediente ingrediente : lanche.getIngredientes()) {
-            soma += ingrediente.getValor().doubleValue();
-        }
-
-        calcularDescontoPromocao(lanche.getIngredientes());
-        return new BigDecimal(soma);
+        return lancheRepository.add(lanche);
     }
 
     /**
      * Método que adequa o preço do lanche, seguindo promoções disponveis.
      *
-     * @param ingredientes
+     * @param solicitacaoLanche
      * @return BigDecimal
      */
-    private BigDecimal calcularDescontoPromocao(List<Ingrediente> ingredientes) {
-        boolean contemAlface = false;
-        int contadorCarne = 0;
-        int contadorQueijo = 0;
+    private BigDecimal calcularPrecoDesconto(SolicitacaoLanche solicitacaoLanche) {
 
-        Double soma = new Double(0);
-        Double descontoMuitaCarne = new Double(0);
-        Double descontoMuitoQueijo = new Double(0);
+        BigDecimal soma = new BigDecimal(0);
+        List<Ingrediente> ingredientesLanche = new ArrayList<>();
 
-        for (Ingrediente ingrediente : ingredientes) {
-            soma += ingrediente.getValor().doubleValue();
-            if (ingrediente.getId() == TipoIngrediente.ALFACE) {
-                contemAlface = true;
-            } else if (ingrediente.getId() == TipoIngrediente.HAMBUERGUER) {
-                contadorCarne ++;
-                if (isMultiploDeTres(contadorCarne)) {
-                    descontoMuitaCarne += ingrediente.getValor().doubleValue();
-                }
+        // Promoção Light
+        if (solicitacaoLanche.getQtdAlface() > 0 && solicitacaoLanche.getQtdBacon() == 0) {
+            ingredientesLanche = comporIngredientesLanche(solicitacaoLanche);
+            soma = ingredientesLanche.stream().map(Ingrediente::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+            double desconto = soma.doubleValue() * 0.10;
+            soma = BigDecimal.valueOf(soma.doubleValue() - desconto);
 
-            } else if (ingrediente.getId() == TipoIngrediente.QUEIJO) {
-                contadorQueijo++;
-                if(isMultiploDeTres(contadorQueijo)){
-                    descontoMuitoQueijo += ingrediente.getValor().doubleValue();
-                }
+        } else {
+            //Promoção Muita Carne
+            aplicarBaconsGratis(solicitacaoLanche);
+            aplicarHamburgueresGratis(solicitacaoLanche);
+
+            //Promoção muito queijo
+            aplicarQueijoGratis(solicitacaoLanche);
+
+            ingredientesLanche = comporIngredientesLanche(solicitacaoLanche);
+            soma = ingredientesLanche.stream().map(Ingrediente::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+
+        return soma;
+    }
+
+    /**
+     * Método que calcula o preço sem aplicar descontos.
+     *
+     * @param solicitacaoLanche
+     * @return BigDecimal
+     */
+    private BigDecimal calcularPrecoSemDesconto(SolicitacaoLanche solicitacaoLanche) {
+
+        BigDecimal soma = new BigDecimal(0);
+        List<Ingrediente> ingredientesLanche = new ArrayList<>();
+
+        ingredientesLanche = comporIngredientesLanche(solicitacaoLanche);
+        soma = ingredientesLanche.stream().map(Ingrediente::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return soma;
+    }
+
+    private void aplicarBaconsGratis(final SolicitacaoLanche solicitacaoLanche) {
+        int qtdBaconsDescontar = 0;
+        for (int i = 0; i < solicitacaoLanche.getQtdBacon(); i++) {
+            if (isMultiploDeTres(i)) {
+                qtdBaconsDescontar++;
             }
         }
+        solicitacaoLanche.setQtdBacon(solicitacaoLanche.getQtdBacon() - qtdBaconsDescontar);
+    }
 
-        //Promocao Light
-        if (contemAlface && contadorCarne == 0) {
-            soma = soma - (soma.doubleValue() * 10) / 100;
+    private void aplicarHamburgueresGratis(final SolicitacaoLanche solicitacaoLanche) {
+        int qtdHamburgueresDescontar = 0;
+        for (int i = 0; i < solicitacaoLanche.getQtdHamburguer(); i++) {
+            if (isMultiploDeTres(i)) {
+                qtdHamburgueresDescontar++;
+            }
         }
+        solicitacaoLanche.setQtdHamburguer(solicitacaoLanche.getQtdHamburguer() - qtdHamburgueresDescontar);
+    }
 
-        //Promocao Muita Carne
-        if (descontoMuitaCarne.doubleValue() > 0) {
-            soma = soma - descontoMuitaCarne.doubleValue();
+    private void aplicarQueijoGratis(final SolicitacaoLanche solicitacaoLanche) {
+        int qtdQueijoDescontar = 0;
+        for (int i = 0; i < solicitacaoLanche.getQtdQueijo(); i++) {
+            if (isMultiploDeTres(i)) {
+                qtdQueijoDescontar++;
+            }
         }
-
-        if (descontoMuitoQueijo.doubleValue() > 0) {
-            soma = soma.doubleValue() - descontoMuitoQueijo.doubleValue();
-        }
-
-        return new BigDecimal(soma);
+        solicitacaoLanche.setQtdQueijo(solicitacaoLanche.getQtdQueijo() - qtdQueijoDescontar);
     }
 
     /**
@@ -158,10 +172,45 @@ public class LancheService {
      * @return boolean
      */
     private boolean isMultiploDeTres(int quantidade) {
-        if (quantidade % 3 == 0) {
-            return true;
+        if (quantidade != 0) {
+            return quantidade % 3 == 0;
+        }
+        return false;
+    }
+
+    private List<Ingrediente> comporIngredientesLanche(SolicitacaoLanche solicitacaoLanche) {
+        List<Ingrediente> listaIngredientes = new ArrayList<>();
+
+        //Alface
+        for (int a = 0; a < solicitacaoLanche.getQtdAlface(); a++) {
+            listaIngredientes.add(new Ingrediente(new Long(TipoIngrediente.ALFACE.getCodigo()),
+                            TipoIngrediente.ALFACE.getDescricao(), TipoIngrediente.ALFACE.getValor()));
         }
 
-        return false;
+        // Bacon
+        for (int b = 0; b < solicitacaoLanche.getQtdBacon(); b++) {
+            listaIngredientes.add(new Ingrediente(new Long(TipoIngrediente.BACON.getCodigo()),
+                            TipoIngrediente.BACON.getDescricao(), TipoIngrediente.BACON.getValor()));
+        }
+
+        // Hamburguer
+        for (int h = 0; h < solicitacaoLanche.getQtdHamburguer(); h++) {
+            listaIngredientes.add(new Ingrediente(new Long(TipoIngrediente.HAMBURGUER.getCodigo()),
+                            TipoIngrediente.HAMBURGUER.getDescricao(), TipoIngrediente.HAMBURGUER.getValor()));
+        }
+
+        //Ovo
+        for (int o = 0; o < solicitacaoLanche.getQtdOvo(); o++) {
+            listaIngredientes.add(new Ingrediente(new Long(TipoIngrediente.OVO.getCodigo()), TipoIngrediente.OVO.getDescricao(),
+                            TipoIngrediente.OVO.getValor()));
+        }
+
+        //Queijo
+        for (int q = 0; q < solicitacaoLanche.getQtdQueijo(); q++) {
+            listaIngredientes.add(new Ingrediente(new Long(TipoIngrediente.QUEIJO.getCodigo()),
+                            TipoIngrediente.QUEIJO.getDescricao(),
+                            TipoIngrediente.QUEIJO.getValor()));
+        }
+        return listaIngredientes;
     }
 }

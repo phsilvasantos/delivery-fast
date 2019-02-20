@@ -5,6 +5,7 @@ import com.br.deliveryfast.domain.Pedido;
 import com.br.deliveryfast.repository.LancheRepository;
 import com.br.deliveryfast.repository.PedidoRepository;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
+@Ignore
 public class PedidoTests {
 
     @Autowired

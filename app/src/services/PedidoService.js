@@ -1,4 +1,4 @@
-import endpoints from './../constantes/endpoints'
+import endpoints from '../constantes/endpoints'
 
 class PedidoService {
 

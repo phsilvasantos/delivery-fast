@@ -1,13 +1,9 @@
-import { observable } from 'mobx';
+import { observable, decorate } from 'mobx';
 
 class Lanche  {
-  @observable
   id;
-  @observable
   descricao;
-  @observable
   tipoLanche;
-  @observable
   valor;
 
   static getAttributesTable() {
@@ -16,8 +12,17 @@ class Lanche  {
       'descricao',
       'tipoLanche',
       'valor',
+      'valorComDesconto'
     ];
   }
 }
+
+decorate(Lanche, {
+  id: observable,
+  descricao: observable,
+  tipoLanche: observable,
+  valor: observable,
+  valorComDesconto: observable,
+}) 
 
 export default Lanche;

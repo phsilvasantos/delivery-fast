@@ -58,7 +58,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "proxy": "http://localhost:8080"
+    "proxy": "http://localhost:8085"
   },
   "browserslist": [
     ">0.2%",

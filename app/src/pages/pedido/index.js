@@ -17,32 +17,17 @@ class PedidoList extends Component {
     this.pageState.loadPedidos();
   }
 
-  async remove(id) {
-    await fetch(`/api/pedidos/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(() => {
-      let updatedPedidos = [...this.pageState.pedidos].filter(i => i.id !== id);
-    });
-  }
 
   render() {
-    debugger;
-
     if (this.pageState.loading) {
       return <p>Loading Pedidos...</p>;
     }
 
     const pedidoList = this.pageState.pedidos.map(pedido => {
-      const pedidoDetalhe = `${pedido.id || ''} ${pedido.cliente || ''} }`;
       return <tr key={pedido.id}>
         <td style={{whiteSpace: 'nowrap'}}>{pedido.id}</td>
         <td style={{whiteSpace: 'nowrap'}}>{pedido.cliente}</td>
         <td style={{whiteSpace: 'nowrap'}}>{pedido.endereco}</td>
-        {/* <td style={{whiteSpace: 'nowrap'}}>{pedido.dtPedido}</td> */}
         { <td style={{whiteSpace: 'nowrap'}}>{new Intl.DateTimeFormat('pt-BR', {
           year: 'numeric',
           month: 'long',

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../App.css';
-import AppNavbar from '../componentes/BarraNavegacao';
+import AppNavbar from './BarraNavegacao';
 import { Link } from 'react-router-dom';
 import { Button, Container } from 'reactstrap';
 
@@ -9,8 +9,7 @@ class Home extends Component {
     return (
       <div>
         <AppNavbar/>
-        <Container fluid>
-            <Button color="link"><Link to="/pedidos">Solicitar Pedido</Link></Button>            
+        <Container fluid>    
             <Button color="link"><Link to="/lanches">Solicitação de Lanches</Link></Button>
         </Container>
       </div>

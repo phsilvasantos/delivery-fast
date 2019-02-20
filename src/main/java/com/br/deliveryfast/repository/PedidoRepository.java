@@ -17,7 +17,7 @@ import java.util.Map;
  * Classe responsavel por operacoes de CRUD para entidade Pedido
  */
 @Repository
-public class PedidoRepository extends com.br.deliveryfast.repository.Repository {
+public class PedidoRepository {
 
     private static final Logger LOG = Logger.getLogger(PedidoRepository.class);
 
@@ -40,6 +40,12 @@ public class PedidoRepository extends com.br.deliveryfast.repository.Repository 
         return jdbcTemplate.query("SELECT * FROM PEDIDOS", new BeanPropertyRowMapper<>(Pedido.class));
     }
 
+    /**
+     * Adiciona uma entidade Pedido na camada de persistencia.
+     *
+     * @param pedido
+     * @return Pedido
+     */
     @Transactional
     public Pedido add(Pedido pedido) {
         Map<String, Object> parametros = new HashMap<>();
@@ -54,7 +60,6 @@ public class PedidoRepository extends com.br.deliveryfast.repository.Repository 
 
             int key = namedParameterJdbcTemplate.update(sql, parametros);
 
-            //            int key = namedParameterJdbcTemplate.update(sql, parametros);
             pedido.setId(Long.valueOf(key));
 
             // Persisto em tabela relacional os respectivos lanches que compoem um pedido.
@@ -64,7 +69,9 @@ public class PedidoRepository extends com.br.deliveryfast.repository.Repository 
 
                 for (Long idLanche : pedido.getIdLanches()) {
                     parametros.put("idLanche", idLanche);
-                    namedParameterJdbcTemplate.update("INSERT INTO PEDIDOS_LANCHES(ID_PEDIDO, ID_LANCHE) VALUES(:idPedido, :idLanche)", parametros);
+                    namedParameterJdbcTemplate
+                                    .update("INSERT INTO PEDIDOS_LANCHES(ID_PEDIDO, ID_LANCHE) VALUES(:idPedido, :idLanche)",
+                                                    parametros);
                 }
             }
         } catch (Exception e) {
@@ -73,25 +80,4 @@ public class PedidoRepository extends com.br.deliveryfast.repository.Repository 
 
         return pedido;
     }
-
-    //    @Transactional
-    //    public void criarPedido(Pedido pedido) {
-    //        MapSqlParameterSource parametros = new MapSqlParameterSource();
-    //        parametros.addValue("idCliente", pedido.getId());
-    //        parametros.addValue("valor", pedido.getValor());
-    //        parametros.addValue("dt_pedido", pedido.getDtPedido());
-    //
-    //        StringBuilder sbQuery = new StringBuilder();
-    //        sbQuery.append("INSERT INTO PEDIDO (ID, ID_CLIENTE, VALOR, DT_PEDIDO) VALUES (PEDIDO_SEQ.NEXTVAL, :idCliente, :valor, :dt_pedido)");
-    //        sbQuery.append("," + pedido.getIdCliente());
-    //        sbQuery.append("," + pedido.getValor());
-    //        sbQuery.append("," + pedido.getDtPedido());
-    //
-    //        try {
-    //            jdbcTemplate.update(sbQuery.toString());
-    //        } catch (Exception e) {
-    //            LOG.error("Ocorreu um erro ao criar o pedido", e);
-    //        }
-    //    }
-
 }

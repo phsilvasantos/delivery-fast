@@ -1,29 +1,20 @@
-import { observable, action, runInAction, computed, decorate } from 'mobx';
-import moment from 'moment';
+import { observable, action, runInAction, decorate } from 'mobx';
 
-
-import CprbEstabelecimento from '../../../domains/CprbEstabelecimento';
 import LancheService from '../../services/LancheService';
 import Lanche from '../../domains/Lanche';
 
 
 class LancheFormState {
-  @observable
   loading = false;
-
-  @observable
   lanches = [];
+  solicitacaoLanche;
 
-
-  @action
   initialize(params) {
-    //this.loading = true;
-    //promises.push(EstabelecimentoUsuarioViewService.getFiliais(codigoMatriz, periodo));
+    this.loading = true;
   }
 
-  @action
   loadLanches() {
-    this.loadingLanches = true;
+    this.loading = true;
     LancheService.listarLanches()
       .then(response => {
         runInAction(() => {
@@ -32,16 +23,45 @@ class LancheFormState {
           } else {
             this.lanches = [];
           }
-          this.loadingLanches = false;
+          this.loading = false;
         });
       })
       .catch(error => {
         runInAction(() => {
-          this.loadingAtividades = false;
+          this.loading = false;
+          console(error);
         });
       });
   }
 
-}
+  salvar(callback) {
+      this.loading = true;
+      LancheService.save(this.solicitacaoLanche)
+        .then(response => {
+          runInAction('Salvar Lanche', () => {
+            this.loading = false;
+            if (callback) {
+              this.loadLanches();
+            }
+          });
+        })
+        .catch(error => {
+          runInAction('Salvar Lanche', () => {            
+            this.loading = false;
+            console(error);
+          });
+        });
+    }
+  }
+
+
+decorate(LancheFormState, {
+  loading: observable,
+  lanches: observable,
+  solicitacaoLanche: observable,
+  initialize: action,
+  loadLanches: action,
+  salvar: action
+}) 
 
 export default LancheFormState;
