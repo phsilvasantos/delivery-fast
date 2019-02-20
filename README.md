@@ -1,5 +1,6 @@
 # delivery-fast
-Projeto Lanchonete Web, 
+Projeto Lanchonete Web:
+
 Backend>
 utilizando Java 8, Spring, Rest, H2 Database, Docker, JUnit.
 
