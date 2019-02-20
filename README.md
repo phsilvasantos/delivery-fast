@@ -1,4 +1,4 @@
-# delivery-fast
+# Delivery-fast
 Projeto Lanchonete Web:
 
 Backend:
@@ -8,25 +8,25 @@ Frotend:
 React, Mobx, Reactstrap
 
 # Configurando aplicação
--- Maven Gerar artefato --
+Maven Gerar artefato:
 sudo mvn clean install
 
--- Docker API --
-## Buildar imagem:
+# Docker
+### Buildar imagem:
 sudo docker build -f Dockerfile -t delivery-fast-spring-boot .
 
-## Executar aplicacao
+# Executar aplicacao
 sudo docker run -p8085:8085 delivery-fast-spring-boot
 
-## Configurar banco
--- Acessar terminal H2 --
+# Configurar banco
+Acessar terminal H2:
 http://localhost:8085/h2-console/
 
 Copiar scripts do arquivo src/main/resources/schema.sql
 Executa-los para criação de tabelas e constraints
 
 
-## Subir frontend
+# Subir frontend
 cd delivery-fast/app
 yarn start
 
