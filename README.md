@@ -1,11 +1,11 @@
 # delivery-fast
 Projeto Lanchonete Web:
 
-Backend>
-utilizando Java 8, Spring, Rest, H2 Database, Docker, JUnit.
+Backend:
+Java 8, Spring, Rest, H2 Database, Docker, JUnit.
 
-Frotend>
-React, Mobx, Reacbootstrap
+Frotend: 
+React, Mobx, Reactstrap
 
 # Configurando aplicação
 -- Maven Gerar artefato --
