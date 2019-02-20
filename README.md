@@ -1,5 +1,10 @@
 # delivery-fast
-Projeto Lanchonete Web
+Projeto Lanchonete Web, 
+Backend>
+utilizando Java 8, Spring, Rest, H2 Database, Docker, JUnit.
+
+Frotend>
+React, Mobx, Reacbootstrap
 
 -- Maven Gerar artefato --
 sudo mvn clean install
